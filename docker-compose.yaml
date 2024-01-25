@@ -1,0 +1,67 @@
+version: "3.10"
+
+services:
+  web_app:
+    restart: always
+    container_name: web_app
+    build: ./
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - testdb
+    command: bash -c "uvicorn core:app --reload --host 0.0.0.0"
+    networks:
+      - db_net
+    env_file:
+      - ./.env
+
+  db:
+    container_name: db
+    image: postgres:15.1-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5434:5432"
+
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - db_net
+
+  testdb:
+    container_name: testdb
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.testdb
+    ports:
+      - "5433:5433"
+    env_file:
+      - ./.env
+    networks:
+      - db_net
+
+  test:
+    container_name: test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - db_net
+    env_file:
+      ./.env
+    depends_on:
+      - testdb
+
+
+
+volumes:
+  postgres_data:
+networks:
+  db_net:

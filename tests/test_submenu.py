@@ -24,7 +24,7 @@ class Test_Submenu:
 
     @classmethod
     def test_create_submenu(cls):
-        data = {"title": "My menu 1", "description": "My menu description 1"}
+        data = {"title": "My submenu 1", "description": "My submenu description 1"}
         response = client.post(f"/api/v1/menus/{cls.menu_id}/submenus", json=data)
         response_data = response.json()
         cls.id = response_data["id"]
@@ -44,13 +44,13 @@ class Test_Submenu:
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
-        assert data[0]["title"] == "My menu 1"
+        assert data[0]["title"] == "My submenu 1"
 
     @classmethod
     def test_update_menu(cls):
         updated_data = {
-            "title": "My updated menu 1",
-            "description": "My updated menu description 1"
+            "title": "My updated submenu 1",
+            "description": "My updated submenu description 1"
         }
         response = client.patch(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.id}", json=updated_data)
         assert response.status_code == 200

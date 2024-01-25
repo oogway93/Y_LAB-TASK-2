@@ -7,8 +7,9 @@ client = TestClient(app)
 menu_id = ""
 
 
-class Test_Submenu:
+class Test_Dish:
     menu_id = ""
+    submenu_id = ""
     id = ""
 
     @classmethod
@@ -34,12 +35,23 @@ class Test_Submenu:
         assert response_data["description"] == data["description"]
 
     @classmethod
-    def test_read_submenu(cls):
+    def test_create_dish(cls):
+        data = {"title": "My menu 1", "description": "My menu description 1"}
+        response = client.post(f"/api/v1/menus/{cls.menu_id}/submenus", json=data)
+        response_data = response.json()
+        cls.id = response_data["id"]
+        assert response.status_code == 201
+        assert "id" in response_data
+        assert response_data["title"] == data["title"]
+        assert response_data["description"] == data["description"]
+
+    @classmethod
+    def test_read_dish(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.id}")
         assert response.status_code == 200
 
     @classmethod
-    def test_read_submenus(cls):
+    def test_read_dishes(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}/submenus")
         assert response.status_code == 200
         data = response.json()
@@ -47,7 +59,7 @@ class Test_Submenu:
         assert data[0]["title"] == "My menu 1"
 
     @classmethod
-    def test_update_menu(cls):
+    def test_update_dish(cls):
         updated_data = {
             "title": "My updated menu 1",
             "description": "My updated menu description 1"
@@ -59,7 +71,7 @@ class Test_Submenu:
         assert response_data["description"] == updated_data["description"]
 
     @classmethod
-    def test_delete_submenu(cls):
+    def test_delete_dish(cls):
         response = client.delete(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.id}")
         assert response.status_code == 200
         assert not response.json()

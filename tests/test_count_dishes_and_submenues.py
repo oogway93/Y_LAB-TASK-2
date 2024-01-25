@@ -4,8 +4,6 @@ from core import app
 
 client = TestClient(app)
 
-menu_id = ""
-
 
 class Test_Dish:
     menu_id = ""
@@ -64,11 +62,18 @@ class Test_Dish:
     def test_read_menu(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}")
         assert response.status_code == 200
+        data = response.json()
+        assert "id" in data
+        assert data["submenus_count"] == 1
+        assert data["dishes_count"] == 2
 
     @classmethod
     def test_read_submenu(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}")
         assert response.status_code == 200
+        data = response.json()
+        assert "id" in data
+        assert data["dishes_count"] == 2
 
     @classmethod
     def test_delete_submenu(cls):
@@ -77,12 +82,16 @@ class Test_Dish:
         assert not response.json()
 
     @classmethod
-    def test_read_submenus_and_dishes_after_delete(cls):
+    def test_read_submenus_after_delete(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}/submenus")
-        response2 = client.get(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes")
-
         assert response.status_code == 200
-        assert response2.status_code == 200
+        data = response.json()
+        assert len(data) == 0
+
+    @classmethod
+    def test_read_dishes_after_delete(cls):
+        response = client.get(f"/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes")
+        assert response.status_code == 200
         data = response.json()
         assert len(data) == 0
 
@@ -90,6 +99,10 @@ class Test_Dish:
     def test_read_menu_after_delete_submenu(cls):
         response = client.get(f"/api/v1/menus/{cls.menu_id}")
         assert response.status_code == 200
+        data = response.json()
+        assert "id" in data
+        assert data["dishes_count"] == 0
+        assert data["submenus_count"] == 0
 
     @classmethod
     def test_delete_menu(cls):

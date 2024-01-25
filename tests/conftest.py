@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 
 from config import test_link
 from core import app
-from db.database import Base, get_db
+from db.database import Base
+from db.database import get_db
 
 engine = create_engine(test_link)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

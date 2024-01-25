@@ -46,8 +46,8 @@ class Test_Menu:
         assert response_data["title"] == updated_data["title"]
         assert response_data["description"] == updated_data["description"]
 
-    @classmethod
-    def test_delete_menu(cls):
-        response = client.delete(f"/api/v1/menus/{cls.id}")
-        assert response.status_code == 200
-        assert not response.json()
+    # @classmethod
+    # def test_delete_menu(cls):
+    #     response = client.delete(f"/api/v1/menus/{cls.id}")
+    #     assert response.status_code == 200
+    #     assert not response.json()

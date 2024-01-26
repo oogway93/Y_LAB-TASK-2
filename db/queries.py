@@ -1,6 +1,7 @@
 import logging
 import uuid
 
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -52,18 +53,37 @@ class CRUDRestaurantService:
         if id:
             result = db.query(self.model).filter(self.model.id == id).first()
             if self.model == Menu and result is not None:
-                submenu_count = db.query(Submenu).filter(Submenu.menu_id == id).count()
-                dish_count = (
-                    db.query(Dish)
-                    .join(Submenu, Dish.submenu_id == Submenu.id)
-                    .filter(Submenu.menu_id == id)
-                    .count()
-                )
-                result.submenus_count = submenu_count
-                result.dishes_count = dish_count
+                query = db.query(
+                    Menu.id,
+                    Menu.title,
+                    Menu.description,
+                    func.count(Submenu.id.distinct()).label('submenus_count'),
+                    func.count(Dish.id.distinct()).label('dishes_count')
+                ).select_from(Menu).outerjoin(Submenu).outerjoin(Dish).group_by(Menu.id)
+                result_menu = query.first()
+                result_dict = {
+                    'id': str(result_menu[0]),
+                    'title': result_menu[1],
+                    'description': result_menu[2],
+                    'submenus_count': result_menu[3],
+                    'dishes_count': result_menu[4]
+                }
+                return result_dict
             elif self.model == Submenu and result is not None:
-                dish_count = db.query(Dish).filter(Dish.submenu_id == id).count()
-                result.dishes_count = dish_count
+                query = db.query(
+                    Submenu.id,
+                    Submenu.title,
+                    Submenu.description,
+                    func.count(Dish.id.distinct()).label('dishes_count')
+                ).select_from(Submenu).outerjoin(Dish, Submenu.id == Dish.submenu_id).group_by(Submenu.id)
+                result_submenu = query.first()
+                result_dict = {
+                    'id': str(result_submenu[0]),
+                    'title': result_submenu[1],
+                    'description': result_submenu[2],
+                    'dishes_count': result_submenu[3]
+                }
+                return result_dict
             return result
 
     def read_all(

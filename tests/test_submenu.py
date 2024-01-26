@@ -76,6 +76,6 @@ class Test_Submenu:
 
     @classmethod
     def test_delete_menu(cls):
-        response = client.delete(f"/api/v1/menus/{cls.id}")
+        response = client.delete(f"/api/v1/menus/{cls.menu_id}")
         assert response.status_code == 200
         assert not response.json()

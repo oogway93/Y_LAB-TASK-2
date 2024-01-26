@@ -7,6 +7,8 @@ from db.queries import CRUDRestaurantService
 from handlers.handlers_dish import router as dish_router
 from handlers.handlers_menu import menu_router
 from handlers.handlers_submenu import router as submenu_router
+from db.models import metadata_obj
+from db.models import Base
 
 app = FastAPI(title="Task 2")
 app.include_router(menu_router)
@@ -20,4 +22,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-    uvicorn.run("core:app", reload=True, host="0.0.0.0")
+    uvicorn.run("core:app", reload=True, host="0.0.0.0", port=8001)

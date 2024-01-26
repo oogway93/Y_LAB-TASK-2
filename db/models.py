@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column
+from sqlalchemy import Column, MetaData
 from sqlalchemy import ForeignKey
 from sqlalchemy import Numeric
 from sqlalchemy import String
@@ -8,6 +8,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from db.database import Base
+
+metadata_obj = MetaData()
 
 
 class Menu(Base):

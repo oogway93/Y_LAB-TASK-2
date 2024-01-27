@@ -6,7 +6,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from db import schemas
-from db.database import Base, engine
 from db.models import Menu, Submenu, Dish
 
 
@@ -15,11 +14,6 @@ class CRUDRestaurantService:
 
     def __init__(self, model):
         self.model = model
-
-    @staticmethod
-    def create_tables():
-        Base.metadata.drop_all(engine)
-        Base.metadata.create_all(engine)
 
     def create(
             self,
@@ -55,35 +49,19 @@ class CRUDRestaurantService:
             if self.model == Menu and result is not None:
                 query = db.query(
                     Menu.id,
-                    Menu.title,
-                    Menu.description,
                     func.count(Submenu.id.distinct()).label('submenus_count'),
                     func.count(Dish.id.distinct()).label('dishes_count')
                 ).select_from(Menu).outerjoin(Submenu).outerjoin(Dish).group_by(Menu.id)
                 result_menu = query.first()
-                result_dict = {
-                    'id': str(result_menu[0]),
-                    'title': result_menu[1],
-                    'description': result_menu[2],
-                    'submenus_count': result_menu[3],
-                    'dishes_count': result_menu[4]
-                }
-                return result_dict
+                result.submenus_count = result_menu[1]
+                result.dishes_count = result_menu[2]
             elif self.model == Submenu and result is not None:
                 query = db.query(
                     Submenu.id,
-                    Submenu.title,
-                    Submenu.description,
                     func.count(Dish.id.distinct()).label('dishes_count')
                 ).select_from(Submenu).outerjoin(Dish, Submenu.id == Dish.submenu_id).group_by(Submenu.id)
                 result_submenu = query.first()
-                result_dict = {
-                    'id': str(result_submenu[0]),
-                    'title': result_submenu[1],
-                    'description': result_submenu[2],
-                    'dishes_count': result_submenu[3]
-                }
-                return result_dict
+                result.dishes_count = result_submenu[1]
             return result
 
     def read_all(

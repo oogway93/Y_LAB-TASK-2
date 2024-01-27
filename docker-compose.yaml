@@ -28,10 +28,10 @@ services:
 
     env_file:
       - ./.env
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+#    environment:
+#      - POSTGRES_DB=postgres
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
     networks:
       - db_net
 
@@ -44,8 +44,8 @@ services:
       - "5433:5432"
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./.env
+#    env_file:
+#      - ./.env
     networks:
       - db_net
 #    depends_on:
@@ -58,8 +58,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - db_net
-    env_file:
-      ./.env
+#    env_file:
+#      ./.env
     depends_on:
       - testdb
 

@@ -23,6 +23,8 @@
 **Оборачиваем приложение в докер.
 
 ***CRUD – create/update/retrieve/delete.
+
+### __Ответ на 3 пункт в db/queries.py с 42 строчки.__
 1. Firstly, you need to add venv file by this command:
    ```python 
     python -m venv venv

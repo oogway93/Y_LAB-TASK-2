@@ -1,6 +1,7 @@
 import uuid
 
-from sqlalchemy import Column, MetaData
+from sqlalchemy import Column
+from sqlalchemy import MetaData
 from sqlalchemy import ForeignKey
 from sqlalchemy import Numeric
 from sqlalchemy import String

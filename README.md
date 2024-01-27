@@ -36,11 +36,17 @@
    ```python
    ALL SETTINGS FOR POSTGRESQL
    
-   DB_USER=your postgres user
-   DB_PASS=your password for user
-   DB_NAME=your name of db
-   DB_HOST=127.0.0.1 or localhost
+   DB_NAME=postgres
+   DB_USER=postgres
+   DB_PASS=postgres
+   DB_HOST=db
    DB_PORT=5432
+   
+   DB_NAME_TEST=testdb
+   DB_USER_TEST=postgres
+   DB_PASS_TEST=postgres
+   DB_HOST_TEST=testdb
+   DB_PORT_TEST=5432
 4. Start an app from core.py file:
 ### core.py
 > ![photo](https://i.imgur.com/Gorj4Pi.png)

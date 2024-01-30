@@ -1,6 +1,6 @@
-# Y_LAB Task 1
+# Y_LAB Task 2
 
-### *__Y_LAB TASK 1__* is a task for company Y_LAB university. The main assignment was to create an FastAPI app performing Restaurant service.
+### *__Y_LAB TASK 2__* is a task for company Y_LAB university. The main assignment was to create an FastAPI app performing Restaurant service.
 
 ### Conditions:
 
@@ -30,8 +30,6 @@
     python -m venv venv
 2. Create a ".env" file at the root of the directory with params:
    ```python
-   ALL SETTINGS FOR POSTGRESQL
-   
    DB_NAME=postgres
    DB_USER=postgres
    DB_PASS=postgres

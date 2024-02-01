@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from core import app
+from tests.utils import url_for
 
 client = TestClient(app)
 
@@ -15,7 +16,7 @@ class TestMenu:
             'title': 'My menu 1',
             'description': 'My menu description 1'
         }
-        response = client.post('/api/v1/menus', json=data)
+        response = client.post(url_for('create_menu'), json=data)
         response_data = response.json()
         cls.id = response_data['id']
         assert response.status_code == 201
@@ -25,7 +26,7 @@ class TestMenu:
 
     @classmethod
     def test_read_menu(cls):
-        response = client.get(f'/api/v1/menus/{cls.id}')
+        response = client.get(url_for('get_menu', id=cls.id))
         assert response.status_code == 200
         response_data = response.json()
         assert 'id' in response_data
@@ -34,7 +35,7 @@ class TestMenu:
 
     @classmethod
     def test_read_menus(cls):
-        response = client.get('/api/v1/menus')
+        response = client.get(url_for('get_all_menus'))
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
@@ -47,7 +48,7 @@ class TestMenu:
             'title': 'My updated menu 1',
             'description': 'My updated menu description 1'
         }
-        response = client.patch(f'/api/v1/menus/{cls.id}', json=updated_data)
+        response = client.patch(url_for('update_menu', id=cls.id), json=updated_data)
         assert response.status_code == 200
         response_data = response.json()
         assert 'id' in response_data
@@ -56,6 +57,6 @@ class TestMenu:
 
     @classmethod
     def test_delete_menu(cls):
-        response = client.delete(f'/api/v1/menus/{cls.id}')
+        response = client.delete(url_for('delete_menu', id=cls.id))
         assert response.status_code == 200
         assert not response.json()

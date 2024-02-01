@@ -5,8 +5,9 @@ from core import app
 client = TestClient(app)
 
 
-class Test_Menu:
-    id = ""
+class TestMenu:
+    """Test Class Menu"""
+    id: str = ""
 
     @classmethod
     def test_create_items(cls):

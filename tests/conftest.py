@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker
 
 from config import test_link
@@ -7,7 +7,7 @@ from core import app
 from db.database import Base
 from db.database import get_db
 
-engine = create_engine(test_link)
+engine: Engine = create_engine(test_link)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

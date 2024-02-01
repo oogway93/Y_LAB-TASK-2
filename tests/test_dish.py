@@ -5,10 +5,11 @@ from core import app
 client = TestClient(app)
 
 
-class Test_Dish:
-    menu_id = ""
-    submenu_id = ""
-    id = ""
+class TestDish:
+    """Test Class Dish"""
+    menu_id: str = ""
+    submenu_id: str = ""
+    id: str = ""
 
     @classmethod
     def test_create_menu(cls):

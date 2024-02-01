@@ -5,9 +5,10 @@ from core import app
 client = TestClient(app)
 
 
-class Test_Submenu:
-    menu_id = ""
-    id = ""
+class TestSubmenu:
+    """Test Class Submenu"""
+    menu_id: str = ""
+    id: str = ""
 
     @classmethod
     def test_create_menu(cls):

@@ -1,8 +1,6 @@
 import logging
 import uuid
 from typing import Any
-from typing import List
-
 
 from sqlalchemy import Row, func
 from sqlalchemy.exc import IntegrityError

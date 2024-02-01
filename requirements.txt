@@ -1,33 +1,39 @@
-alembic==1.13.1
-annotated-types==0.6.0
-anyio==4.2.0
-certifi==2023.11.17
-click==8.1.7
-exceptiongroup==1.2.0
-fastapi==0.109.0
-flake8==7.0.0
-greenlet==3.0.3
-h11==0.14.0
-httpcore==1.0.2
-httpx==0.26.0
-idna==3.6
-iniconfig==2.0.0
-Mako==1.3.0
-MarkupSafe==2.1.4
-mccabe==0.7.0
-packaging==23.2
-pluggy==1.4.0
-psycopg2-binary==2.9.9
-pycodestyle==2.11.1
-pydantic==2.5.3
-pydantic_core==2.14.6
-pyflakes==3.2.0
-pytest==7.4.4
-python-dotenv==1.0.1
-python-multipart==0.0.6
-sniffio==1.3.0
-SQLAlchemy==2.0.25
-starlette==0.35.1
-tomli==2.0.1
-typing_extensions==4.9.0
-uvicorn==0.27.0
+annotated-types @ file:///home/oogway93/.cache/pypoetry/artifacts/ff/a1/da/a5b2dae4651b050bf08e7b9e45677f83b85ad971667cdd23f75877a895/annotated_types-0.6.0-py3-none-any.whl#sha256=0641064de18ba7a25dee8f96403ebc39113d0cb953a01429249d5c7564666a43
+anyio @ file:///home/oogway93/.cache/pypoetry/artifacts/cf/aa/aa/b22597030617dbb2507d350d2bb689dee8de06c0e697abef32fa1aec9c/anyio-4.2.0-py3-none-any.whl#sha256=745843b39e829e108e518c489b31dc757de7d2131d53fac32bd8df268227bfee
+certifi @ file:///home/oogway93/.cache/pypoetry/artifacts/b1/8f/bb/d2290575920c742f449213ae57b5c57ca92b986f6cf959ea5561040e51/certifi-2023.11.17-py3-none-any.whl#sha256=e036ab49d5b79556f99cfc2d9320b34cfbe5be05c5871b51de9329f0603b0474
+cfgv==3.4.0
+click @ file:///home/oogway93/.cache/pypoetry/artifacts/27/c4/ac/2cdddf5c4177ca31564990e662e79484564089fbdf70b0abe7a2f9833c/click-8.1.7-py3-none-any.whl#sha256=ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28
+distlib==0.3.8
+exceptiongroup @ file:///home/oogway93/.cache/pypoetry/artifacts/33/9a/0c/c5c8d8be38ebefff3be097320ccd4f3914081a1e87c48965b682c25ef6/exceptiongroup-1.2.0-py3-none-any.whl#sha256=4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14
+fastapi @ file:///home/oogway93/.cache/pypoetry/artifacts/78/88/5e/eb8900a34933ce1a2276ed6b0cf7c3b2301c9a126b3d5401a3f65259a4/fastapi-0.109.0-py3-none-any.whl#sha256=8c77515984cd8e8cfeb58364f8cc7a28f0692088475e2614f7bf03275eba9093
+filelock==3.13.1
+flake8 @ file:///home/oogway93/.cache/pypoetry/artifacts/15/3b/45/b9c02ac3dfa5ed5e69333865c0a2cbf68683cc5a83b6f658122cd1008d/flake8-7.0.0-py2.py3-none-any.whl#sha256=a6dfbb75e03252917f2473ea9653f7cd799c3064e54d4c8140044c5c065f53c3
+greenlet @ file:///home/oogway93/.cache/pypoetry/artifacts/f5/68/d5/e564b3885a90acf97cba2d19c4a67629936de959e738d173516e51b10c/greenlet-3.0.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl#sha256=73a411ef564e0e097dbe7e866bb2dda0f027e072b04da387282b02c308807405
+h11 @ file:///home/oogway93/.cache/pypoetry/artifacts/eb/11/e2/ecdc45b11204c453bc727b99c3f31388aaba3d187e49db67e37aa86e18/h11-0.14.0-py3-none-any.whl#sha256=e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761
+httpcore @ file:///home/oogway93/.cache/pypoetry/artifacts/4c/61/87/d5a8593f3a729524c20ecafa0f7523ff6498a3845810761dabd1893e7a/httpcore-1.0.2-py3-none-any.whl#sha256=096cc05bca73b8e459a1fc3dcf585148f63e534eae4339559c9b8a8d6399acc7
+httpx @ file:///home/oogway93/.cache/pypoetry/artifacts/2e/86/5a/ea4c3773f837d1ceb2f6962b216f538cd220d5247ab40e98d710310705/httpx-0.26.0-py3-none-any.whl#sha256=8915f5a3627c4d47b73e8202457cb28f1266982d1159bd5779d86a80c0eab1cd
+identify==2.5.33
+idna @ file:///home/oogway93/.cache/pypoetry/artifacts/df/f4/c1/2ac307c86777d445b3f74c049fea0fe3dd2d9e028b957ea4519ea8fa07/idna-3.6-py3-none-any.whl#sha256=c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f
+iniconfig @ file:///home/oogway93/.cache/pypoetry/artifacts/38/ab/6e/34f3da196c3ef23de3ae1422ee803ddbdd77e53e3d0cf9dba932f0773c/iniconfig-2.0.0-py3-none-any.whl#sha256=b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
+mccabe @ file:///home/oogway93/.cache/pypoetry/artifacts/6e/13/d3/27dd3d81419a63f54cee1343db4375f63135b517d83e52d7447875f739/mccabe-0.7.0-py2.py3-none-any.whl#sha256=6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e
+nodeenv==1.8.0
+packaging @ file:///home/oogway93/.cache/pypoetry/artifacts/7e/8c/4f/5a2ca3bb3a4d3b04144a22df9ee89057d5f0eefebe740c4cc083007aa5/packaging-23.2-py3-none-any.whl#sha256=8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7
+platformdirs==4.2.0
+pluggy @ file:///home/oogway93/.cache/pypoetry/artifacts/7f/95/6b/bdcb94192426a8ed3b109a0f6555aa13f71eb5a3aa6dd0092bd8d74ee6/pluggy-1.4.0-py3-none-any.whl#sha256=7db9f7b503d67d1c5b95f59773ebb58a8c1c288129a88665838012cfb07b8981
+pre-commit==3.6.0
+psycopg2-binary @ file:///home/oogway93/.cache/pypoetry/artifacts/5e/be/9e/39569250094894e4330c899d6f707120705b1a593278ef4f287929c8b9/psycopg2_binary-2.9.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=ed1184ab8f113e8d660ce49a56390ca181f2981066acc27cf637d5c1e10ce46e
+pycodestyle @ file:///home/oogway93/.cache/pypoetry/artifacts/08/1f/6b/feb5882f8cc2283679750758eb81b47e99f84cefe327b991da2886656e/pycodestyle-2.11.1-py2.py3-none-any.whl#sha256=44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67
+pydantic @ file:///home/oogway93/.cache/pypoetry/artifacts/16/29/fc/a8ee2ee7b066871a2247617c87a02d7028aaac2e30bbf7785bccd929c1/pydantic-2.5.3-py3-none-any.whl#sha256=d0caf5954bee831b6bfe7e338c32b9e30c85dfe080c843680783ac2b631673b4
+pydantic_core @ file:///home/oogway93/.cache/pypoetry/artifacts/b8/e0/d6/0e0d70f5baa2e96e725d7d304a3d8f89fde8cc3c6d886ca71aff25c038/pydantic_core-2.14.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=036137b5ad0cb0004c75b579445a1efccd072387a36c7f217bb8efd1afbe5245
+pyflakes @ file:///home/oogway93/.cache/pypoetry/artifacts/bc/bd/98/9f8d76b8abca451a037d74eaec463b63748854340d1b425629642b8651/pyflakes-3.2.0-py2.py3-none-any.whl#sha256=84b5be138a2dfbb40689ca07e2152deb896a65c3a3e24c251c5c62489568074a
+pytest @ file:///home/oogway93/.cache/pypoetry/artifacts/af/c6/58/8d1c48a4227072b8aa02b1d6b856d8cfd6364ff967b38909822dc90ef1/pytest-7.4.4-py3-none-any.whl#sha256=b090cdf5ed60bf4c45261be03239c2c1c22df034fbffe691abe93cd80cea01d8
+python-dotenv @ file:///home/oogway93/.cache/pypoetry/artifacts/08/64/1a/5703f10b5c961196a49fb5c2a16c92b5fa184bfd1963b962217da3f97d/python_dotenv-1.0.1-py3-none-any.whl#sha256=f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a
+python-multipart @ file:///home/oogway93/.cache/pypoetry/artifacts/a5/26/d3/25eed857cebbcbc0da8b2edf9c3167a2fb02f9f336226b24791e209545/python_multipart-0.0.6-py3-none-any.whl#sha256=ee698bab5ef148b0a760751c261902cd096e57e10558e11aca17646b74ee1c18
+PyYAML==6.0.1
+sniffio @ file:///home/oogway93/.cache/pypoetry/artifacts/c9/3f/3e/8e46c9457f352d5bba461491356dfede8138f565b9e1015719034b36a1/sniffio-1.3.0-py3-none-any.whl#sha256=eecefdce1e5bbfb7ad2eeaabf7c1eeb404d7757c379bd1f7e5cce9d8bf425384
+SQLAlchemy @ file:///home/oogway93/.cache/pypoetry/artifacts/ed/06/22/4890d170e297a2d4d5396115160b16544bd7c2801fbd276eb69e965d2a/SQLAlchemy-2.0.25-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=bc8b7dabe8e67c4832891a5d322cec6d44ef02f432b4588390017f5cec186a84
+starlette @ file:///home/oogway93/.cache/pypoetry/artifacts/b3/c8/b9/de2cb9ad0180ce6b4f9dbb41ab56d958a22ebdf7576c12f6b9cd422bb5/starlette-0.35.1-py3-none-any.whl#sha256=50bbbda9baa098e361f398fda0928062abbaf1f54f4fadcbe17c092a01eb9a25
+tomli @ file:///home/oogway93/.cache/pypoetry/artifacts/62/12/b6/6db9ebb9c8e1a6c5aa8a92ae73098d8119816b5e8507490916621bc305/tomli-2.0.1-py3-none-any.whl#sha256=939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc
+typing_extensions @ file:///home/oogway93/.cache/pypoetry/artifacts/5c/21/b6/4949e904bebf369fe9337b321e30aff509f6dd985d0a04d17724e59b75/typing_extensions-4.9.0-py3-none-any.whl#sha256=af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd
+uvicorn @ file:///home/oogway93/.cache/pypoetry/artifacts/27/6f/38/cd5d7a87e6eb73aa862aa5f1fe454dc68005ea596ca59a6c525c583ac2/uvicorn-0.26.0-py3-none-any.whl#sha256=cdb58ef6b8188c6c174994b2b1ba2150a9a8ae7ea5fb2f1b856b94a815d6071d
+virtualenv==20.25.0

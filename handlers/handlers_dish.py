@@ -10,7 +10,7 @@ from db.database import get_db
 from db.models import Dish
 from db.queries import CRUDRestaurantService
 
-router = APIRouter(prefix='/api/v1/menus')
+router = APIRouter(prefix='/api/v1/menus', tags=['Dish'])
 
 restaurant_service = CRUDRestaurantService(Dish)
 
@@ -27,15 +27,16 @@ async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish,
     return JSONResponse(content=json_compatible_item_data, status_code=201)
 
 
-@router.get('/{menu_id}/submenus/{submenu_id}/dishes/{id}', response_model=None)
-async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> schemas.Dish | JSONResponse:
+@router.get('/{menu_id}/submenus/{submenu_id}/dishes/{id}', response_model=schemas.Dish)
+async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse:
     """Просматривает определенное блюдо"""
     dish = restaurant_service.read(db, id)
     if dish is not None:
         dish.price = str(dish.price)
     if not dish:
         return JSONResponse(content={'detail': 'dish not found'}, status_code=404)
-    return dish
+    json_compatible_item_data = jsonable_encoder(dish)
+    return JSONResponse(content=json_compatible_item_data)
 
 
 @router.get('/{menu_id}/submenus/{submenu_id}/dishes')

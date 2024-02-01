@@ -10,7 +10,7 @@ from db.database import get_db
 from db.models import Submenu
 from db.queries import CRUDRestaurantService
 
-router = APIRouter(prefix='/api/v1/menus')
+router = APIRouter(prefix='/api/v1/menus', tags=['Submenu'])
 
 restaurant_service = CRUDRestaurantService(Submenu)
 
@@ -26,13 +26,14 @@ async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu,
     return JSONResponse(content=json_compatible_item_data, status_code=201)
 
 
-@router.get('/{menu_id}/submenus/{id}', response_model=None)
-async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)) -> schemas.Submenu | JSONResponse:
+@router.get('/{menu_id}/submenus/{id}', response_model=schemas.Submenu)
+async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse:
     """Просматривает определенное подменю"""
     submenu = restaurant_service.read(db, id)
     if not submenu:
         return JSONResponse(content={'detail': 'submenu not found'}, status_code=404)
-    return submenu
+    json_compatible_item_data = jsonable_encoder(submenu)
+    return JSONResponse(content=json_compatible_item_data)
 
 
 @router.get('/{menu_id}/submenus')

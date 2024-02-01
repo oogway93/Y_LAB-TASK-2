@@ -5,6 +5,7 @@ from db.queries import CRUDRestaurantService
 from handlers.handlers_dish import router as dish_router
 from handlers.handlers_menu import router as menu_router
 from handlers.handlers_submenu import router as submenu_router
+from typing import List
 
 app = FastAPI(title='Task 2')
 app.include_router(menu_router)

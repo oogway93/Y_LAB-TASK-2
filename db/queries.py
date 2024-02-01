@@ -2,7 +2,7 @@ import logging
 import uuid
 from typing import Any
 
-from sqlalchemy import Boolean, Row, func
+from sqlalchemy import Row, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -29,7 +29,7 @@ class CRUDRestaurantService:
             menu_id: uuid.UUID | None = None,
             submenu_id: uuid.UUID | None = None,
             id: uuid.UUID | None = None
-    ) -> list[Row[tuple[Any]]] | Boolean:
+    ) -> bool:
         table = self.model(**data.model_dump())
         if id is not None:
             table.id = id
@@ -50,31 +50,31 @@ class CRUDRestaurantService:
             self,
             db: Session,
             id: uuid.UUID | None = None,
-    ):
-        if id:
-            result = db.query(self.model).filter(self.model.id == id).first()
-            if self.model == Menu and result is not None:
-                query = db.query(
-                    Menu.id,
-                    func.count(Submenu.id.distinct()).label('submenus_count'),
-                    func.count(Dish.id.distinct()).label('dishes_count')
-                ).select_from(Menu).outerjoin(Submenu).outerjoin(Dish).group_by(Menu.id)
-                result_menu = query.first()
-                result.submenus_count = result_menu[1]
-                result.dishes_count = result_menu[2]
-            elif self.model == Submenu and result is not None:
-                query = db.query(
-                    Submenu.id,
-                    func.count(Dish.id.distinct()).label('dishes_count')
-                ).select_from(Submenu).outerjoin(Dish, Submenu.id == Dish.submenu_id).group_by(Submenu.id)
-                result_submenu = query.first()
-                result.dishes_count = result_submenu[1]
-            return result
+    ) -> schemas.Menu | schemas.Submenu | schemas.Dish | Row[tuple[Any]] | None:
+        # if id:
+        result = db.query(self.model).filter(self.model.id == id).first()
+        if self.model == Menu and result is not None:
+            query = db.query(
+                Menu.id,
+                func.count(Submenu.id.distinct()).label('submenus_count'),
+                func.count(Dish.id.distinct()).label('dishes_count')
+            ).select_from(Menu).outerjoin(Submenu).outerjoin(Dish).group_by(Menu.id)
+            result_menu = query.first()
+            result.submenus_count = result_menu[1]
+            result.dishes_count = result_menu[2]
+        elif self.model == Submenu and result is not None:
+            query = db.query(
+                Submenu.id,
+                func.count(Dish.id.distinct()).label('dishes_count')
+            ).select_from(Submenu).outerjoin(Dish).group_by(Submenu.id)
+            result_submenu = query.first()
+            result.dishes_count = result_submenu[1]
+        return result
 
     def read_all(
             self,
             db: Session
-    ):
+    ) -> list[schemas.Menu | schemas.Submenu | schemas.Dish] | list[Row[tuple[Any]]]:
         return db.query(self.model).all()
 
     def update(

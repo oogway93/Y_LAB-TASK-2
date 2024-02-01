@@ -26,22 +26,22 @@
 
 ### __Ответ на 3 пункт в db/queries.py с 42 строчки.__
 1. Firstly, you need to add venv file by this command:
-   ```python 
+   ```python
     python -m venv venv
 2. Create a ".env" file at the root of the directory with params:
    ```python
    ALL SETTINGS FOR POSTGRESQL
-   
+
    DB_NAME=postgres
    DB_USER=postgres
    DB_PASS=postgres
    DB_HOST=db
    DB_PORT=5432
-   
+
    POSTGRES_DB=postgres
    POSTGRES_USER=postgres
    POSTGRES_PASSWORD=postgres
-   
+
    DB_NAME_TEST=testdb
    DB_USER_TEST=postgres
    DB_PASS_TEST=postgres
@@ -50,4 +50,3 @@
 3. Start docker-compose.yaml by the command:
    ```python
    docker compose up -d --build
-

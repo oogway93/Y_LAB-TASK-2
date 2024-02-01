@@ -1,17 +1,23 @@
 import logging
 import uuid
-from typing import List, Any, NoReturn, Optional
+from typing import Any
 
-from sqlalchemy import func, Row, Boolean
+from sqlalchemy import Boolean, Row, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from db import schemas
-from db.models import Menu, Submenu, Dish
+from db.database import Base, engine
+from db.models import Dish, Menu, Submenu
 
 
 class CRUDRestaurantService:
     """ALL ORM METHODS."""
+
+    @staticmethod
+    def create_tables():
+        Base.metadata.drop_all(engine)
+        Base.metadata.create_all(engine)
 
     def __init__(self, model):
         self.model = model
@@ -20,10 +26,10 @@ class CRUDRestaurantService:
             self,
             data: schemas.Menu | schemas.Submenu | schemas.Dish,
             db: Session,
-            menu_id: uuid.UUID = None,
-            submenu_id: uuid.UUID = None,
-            id: uuid.UUID = None
-    ) -> Optional[List[Row[tuple[Any]]], Boolean]:
+            menu_id: uuid.UUID | None = None,
+            submenu_id: uuid.UUID | None = None,
+            id: uuid.UUID | None = None
+    ) -> list[Row[tuple[Any]]] | Boolean:
         table = self.model(**data.model_dump())
         if id is not None:
             table.id = id
@@ -43,8 +49,8 @@ class CRUDRestaurantService:
     def read(
             self,
             db: Session,
-            id: uuid.UUID = None,
-    ) -> Row[tuple[Any]]:
+            id: uuid.UUID | None = None,
+    ):
         if id:
             result = db.query(self.model).filter(self.model.id == id).first()
             if self.model == Menu and result is not None:
@@ -68,14 +74,14 @@ class CRUDRestaurantService:
     def read_all(
             self,
             db: Session
-    ) -> List[Row[tuple[Any]]]:
+    ):
         return db.query(self.model).all()
 
     def update(
             self,
             data: schemas.Menu | schemas.Submenu | schemas.Dish,
             db: Session,
-            id: uuid.UUID = None
+            id: uuid.UUID | None = None
     ) -> Row[tuple[Any]]:
         table = db.query(self.model).filter(self.model.id == id).first()
         for key, value in data.model_dump().items():
@@ -91,7 +97,7 @@ class CRUDRestaurantService:
     def delete(
             self,
             db: Session,
-            id: uuid.UUID = None
-    ) -> NoReturn:
+            id: uuid.UUID | None = None
+    ) -> None:
         db.query(self.model).filter(self.model.id == id).delete()
         db.commit()

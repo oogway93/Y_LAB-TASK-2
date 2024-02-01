@@ -1,10 +1,12 @@
 import uuid
+from typing import Optional, Any, Dict, List, NoReturn
 
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.responses import Response
+from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
 from db import schemas
@@ -18,7 +20,8 @@ restaurant_service = CRUDRestaurantService(Dish)
 
 
 @router.post("/{menu_id}/submenus/{submenu_id}/dishes")
-async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish, db: Session = Depends(get_db)):
+async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish, db: Session = Depends(get_db)) -> Optional[JSONResponse, Response]:
+    """Создаёт блюдо"""
     dish_creation = restaurant_service.create(data, db, submenu_id=submenu_id)
     if not dish_creation:
         return Response(content="Failed to create dish", status_code=400)
@@ -28,7 +31,8 @@ async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish, db: Session = D
 
 
 @router.get("/{menu_id}/submenus/{submenu_id}/dishes/{id}")
-async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)):
+async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> Optional[JSONResponse, Row[tuple[Any]]]:
+    """Просматривает определенное блюдо"""
     dish = restaurant_service.read(db, id)
     if dish is not None:
         dish.price = str(dish.price)
@@ -38,12 +42,14 @@ async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/{menu_id}/submenus/{submenu_id}/dishes")
-async def get_all_dishes(db: Session = Depends(get_db)):
+async def get_all_dishes(db: Session = Depends(get_db)) -> List[Row[tuple[Any]]]:
+    """Просматривает список блюдо"""
     return restaurant_service.read_all(db)
 
 
 @router.patch("/{menu_id}/submenus/{submenu_id}/dishes/{id}")
-async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(get_db)):
+async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(get_db)) -> Optional[JSONResponse, Response]:
+    """Обновляет блюдо"""
     updated_dish = restaurant_service.update(data, db, id)
     json_compatible_item_data = jsonable_encoder(updated_dish)
     json_compatible_item_data["price"] = str(jsonable_encoder(updated_dish)["price"])
@@ -51,5 +57,6 @@ async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(g
 
 
 @router.delete("/{menu_id}/submenus/{submenu_id}/dishes/{id}")
-async def delete_dish(id: uuid.UUID, db: Session = Depends(get_db)):
+async def delete_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> NoReturn:
+    """Удаляет блюдо"""
     restaurant_service.delete(db, id)

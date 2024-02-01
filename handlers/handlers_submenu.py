@@ -1,10 +1,12 @@
 import uuid
+from typing import Optional, Any, List, NoReturn
 
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.responses import Response
+from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
 from db import schemas
@@ -18,7 +20,8 @@ restaurant_service = CRUDRestaurantService(Submenu)
 
 
 @router.post("/{menu_id}/submenus")
-async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)):
+async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)) -> Optional[JSONResponse, Response]:
+    """Создаёт подменю"""
     submenu_creation = restaurant_service.create(data, db, menu_id)
     if not submenu_creation:
         return Response(content="Error: Creation menu is failed", status_code=400)
@@ -27,7 +30,8 @@ async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: S
 
 
 @router.get("/{menu_id}/submenus/{id}")
-async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
+async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)) -> Optional[JSONResponse, Row[tuple[Any]]]:
+    """Просматривает определенное подменю"""
     submenu = restaurant_service.read(db, id)
     if not submenu:
         return JSONResponse(content={"detail": "submenu not found"}, status_code=404)
@@ -35,17 +39,20 @@ async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/{menu_id}/submenus")
-async def get_all_submenus(db: Session = Depends(get_db)):
+async def get_all_submenus(db: Session = Depends(get_db)) -> List[Row[tuple[Any]]]:
+    """Просматривает список подменю"""
     return restaurant_service.read_all(db)
 
 
 @router.patch("/{menu_id}/submenus/{id}")
-async def update_submenu(id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)):
+async def update_submenu(id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)) -> JSONResponse:
+    """Обновляет подменю"""
     updated_submenu = restaurant_service.update(data, db, id)
     json_compatible_item_data = jsonable_encoder(updated_submenu)
     return JSONResponse(content=json_compatible_item_data)
 
 
 @router.delete("/{menu_id}/submenus/{id}")
-async def delete_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
+async def delete_submenu(id: uuid.UUID, db: Session = Depends(get_db)) -> NoReturn:
+    """Удаляет подменю"""
     return restaurant_service.delete(db, id)

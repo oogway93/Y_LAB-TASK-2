@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from core import app
+from tests.utils import reverse
 
 client = TestClient(app)
 
@@ -17,7 +18,7 @@ class TestDish:
             'title': 'My menu 1',
             'description': 'My menu description 1'
         }
-        response = client.post('/api/v1/menus', json=data)
+        response = client.post(reverse('create_menu'), json=data)
         assert response.status_code == 201
         response_data = response.json()
         cls.menu_id = response_data['id']
@@ -31,7 +32,7 @@ class TestDish:
             'title': 'My submenu 1',
             'description': 'My submenu description 1'
         }
-        response = client.post(f'/api/v1/menus/{cls.menu_id}/submenus', json=data)
+        response = client.post(reverse('create_submenu', menu_id=cls.menu_id), json=data)
         assert response.status_code == 201
         response_data = response.json()
         cls.submenu_id = response_data['id']
@@ -46,7 +47,7 @@ class TestDish:
             'description': 'My dish description 1',
             'price': '12.50'
         }
-        response = client.post(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes', json=data)
+        response = client.post(reverse('create_dish', menu_id=cls.menu_id, submenu_id=cls.submenu_id), json=data)
         assert response.status_code == 201
         response_data = response.json()
         cls.id = response_data['id']
@@ -57,7 +58,7 @@ class TestDish:
 
     @classmethod
     def test_read_dish(cls):
-        response = client.get(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes/{cls.id}')
+        response = client.get(reverse('get_dish', menu_id=cls.menu_id, submenu_id=cls.submenu_id, id=cls.id))
         assert response.status_code == 200
         response_data = response.json()
         assert 'id' in response_data
@@ -67,7 +68,7 @@ class TestDish:
 
     @classmethod
     def test_read_dishes(cls):
-        response = client.get(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes')
+        response = client.get(reverse('get_all_dishes', menu_id=cls.menu_id, submenu_id=cls.submenu_id))
         assert response.status_code == 200
         response_data = response.json()
         assert len(response_data) == 1
@@ -82,7 +83,7 @@ class TestDish:
             'description': 'My updated dish description 1',
             'price': '14.50'
         }
-        response = client.patch(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes/{cls.id}',
+        response = client.patch(reverse('update_dish', menu_id=cls.menu_id, submenu_id=cls.submenu_id, id=cls.id),
                                 json=updated_data)
         assert response.status_code == 200
         response_data = response.json()
@@ -93,18 +94,18 @@ class TestDish:
 
     @classmethod
     def test_delete_dish(cls):
-        response = client.delete(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.submenu_id}/dishes/{cls.id}')
+        response = client.delete(reverse('delete_dish', menu_id=cls.menu_id, submenu_id=cls.submenu_id, id=cls.id))
         assert response.status_code == 200
         assert not response.json()
 
     @classmethod
     def test_delete_submenu(cls):
-        response = client.delete(f'/api/v1/menus/{cls.menu_id}/submenus/{cls.id}')
+        response = client.delete(reverse('delete_submenu', menu_id=cls.menu_id, id=cls.submenu_id))
         assert response.status_code == 200
         assert not response.json()
 
     @classmethod
     def test_delete_menu(cls):
-        response = client.delete(f'/api/v1/menus/{cls.menu_id}')
+        response = client.delete(reverse('delete_menu', id=cls.menu_id))
         assert response.status_code == 200
         assert not response.json()

@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
@@ -75,12 +75,22 @@ async def get_all_menus(db: Session = Depends(get_db)) -> list[schemas.Menu]:
 @router.patch('/menus/{id}')
 async def update_menu(id: uuid.UUID, data: schemas.Menu, db: Session = Depends(get_db)) -> JSONResponse:
     """Обновляет меню"""
-    updated_menu = restaurant_service.update(data, db, id)
-    json_compatible_item_data = jsonable_encoder(updated_menu)
-    return JSONResponse(content=json_compatible_item_data)
+    try:
+        # Attempt to update the menu in Redis and the database
+        updated_menu = redis_service.update(id, data, db)
+        return JSONResponse(content=jsonable_encoder(updated_menu))
+    except HTTPException as e:
+        # Handle exceptions, such as when the item is not found
+        raise e
+    # updated_menu = restaurant_service.update(data, db, id)
+    # json_compatible_item_data = jsonable_encoder(updated_menu)
+    # return JSONResponse(content=json_compatible_item_data)
 
 
 @router.delete('/menus/{id}')
 async def delete_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
     """Удаляет меню"""
+    redis_service.delete(id)
     return restaurant_service.delete(db, id)
+    # Delete the menu from Redis
+    # Return a 204 No Content response to indicate success

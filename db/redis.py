@@ -1,11 +1,13 @@
 import json
 import uuid
 
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from redis_om import NotFoundError
 from sqlalchemy.orm import Session
 
 from core import redis
+from db import schemas
 from db.queries import CRUDRestaurantService
 
 
@@ -35,3 +37,23 @@ class CRUDRedisService:
             if result_redis is not None:
                 menus.append(json.loads(result_redis.encode('utf-8')))
         return menus
+
+    def update(self, id: uuid.UUID, data: schemas.Menu | schemas.Submenu | schemas.Dish, db: Session) -> dict | None:
+        """Updates an item in Redis and the database"""
+        # First, update the item in the database
+        updated_item = self.restaurant_service.update(data, db, id)
+        if updated_item:
+            # Then, update the item in Redis
+            item_str = json.dumps(jsonable_encoder(updated_item))
+            redis.set(f'{self.model}:{id}', item_str)
+            return updated_item
+        else:
+            # Handle the case where the item was not found in the database
+            raise HTTPException(status_code=404, detail='Item not found')
+
+    def delete(self, id: uuid.UUID) -> None:
+        """Deletes an item from Redis"""
+        # Construct the key for the item to be deleted
+        key = f'{self.model}:{id}'
+        # Delete the key from Redis
+        redis.delete(key)

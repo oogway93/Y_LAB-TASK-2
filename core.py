@@ -1,7 +1,7 @@
+import redis
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from redis_om import get_redis_connection
 
 app = FastAPI(title='Task 3', version='0.3.0')
 app.add_middleware(
@@ -12,11 +12,7 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-redis = get_redis_connection(
-    host='localhost',
-    port=6379,
-    decode_responses=True
-)
+re: redis.Redis = redis.Redis(host='localhost', port=6379)
 
 
 @app.on_event('startup')

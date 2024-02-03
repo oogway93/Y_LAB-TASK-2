@@ -35,22 +35,12 @@ async def create_menu(data: schemas.Menu, db: Session = Depends(get_db)) -> JSON
 @router.get('/menus/{id}', response_model=schemas.Menu)
 async def get_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse:
     """Просматривает определенное меню"""
-
-    # result = redis.get(f'menu:{id}')
-    # if result is not None:
-    #     cached_menu = json.loads(result.encode('utf-8'))
-    #     return JSONResponse(content=cached_menu)
-
-    # If the result is not in Redis, get it from the database
     cached_menu = redis_service.read(db, id)
     if cached_menu is not None:
-        return JSONResponse(content=json.loads(cached_menu.encode('utf-8')))
+        return JSONResponse(content=json.loads(cached_menu.decode('utf-8')))
     menu = restaurant_service.read(db, id)
     if not menu:
         return JSONResponse(content={'detail': 'menu not found'}, status_code=404)
-
-    # Save the result in Redis for future requests
-    # redis.set(f'menu:{id}', json.dumps(jsonable_encoder(menu)))
     json_compatible_item_data = jsonable_encoder(menu)
     return JSONResponse(content=json_compatible_item_data)
 

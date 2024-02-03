@@ -24,10 +24,6 @@ async def create_menu(data: schemas.Menu, db: Session = Depends(get_db)) -> JSON
     menu_creation = restaurant_service.create(data, db)
     if not menu_creation:
         return JSONResponse(content={'Error': 'Creation menu is failed'}, status_code=400)
-    # menu_hash = schemas.MenuHash(id=str(), title=data.id,
-    #                              description=data.id)
-    # menu_hash.save()
-
     json_compatible_item_data = jsonable_encoder(menu_creation)
     return JSONResponse(content=json_compatible_item_data, status_code=201)
 
@@ -72,15 +68,10 @@ async def update_menu(id: uuid.UUID, data: schemas.Menu, db: Session = Depends(g
     except HTTPException as e:
         # Handle exceptions, such as when the item is not found
         raise e
-    # updated_menu = restaurant_service.update(data, db, id)
-    # json_compatible_item_data = jsonable_encoder(updated_menu)
-    # return JSONResponse(content=json_compatible_item_data)
 
 
 @router.delete('/menus/{id}')
 async def delete_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
     """Удаляет меню"""
-    redis_service.delete(id)
+    redis_service.delete(id, db)
     return restaurant_service.delete(db, id)
-    # Delete the menu from Redis
-    # Return a 204 No Content response to indicate success

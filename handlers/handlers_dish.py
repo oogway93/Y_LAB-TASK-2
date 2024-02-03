@@ -82,5 +82,5 @@ async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(g
 @router.delete('/{menu_id}/submenus/{submenu_id}/dishes/{id}')
 async def delete_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
     """Удаляет блюдо"""
-    redis_service.delete(id)
+    redis_service.delete(id, db)
     return restaurant_service.delete(db, id)

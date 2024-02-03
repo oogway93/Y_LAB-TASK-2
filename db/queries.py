@@ -69,9 +69,9 @@ class CRUDRestaurantService:
                 ).select_from(Submenu).outerjoin(Dish).group_by(Submenu.id)
                 result_submenu = query.first()
                 result.dishes_count = result_submenu[1]
-            elif self.model == Dish and result is not None:
-                """Вывод цены в формате соответствующем с тестами Postman"""
-                result.price = str(float(result.price))
+            # elif self.model == Dish and result is not None:
+            #     """Вывод цены в формате соответствующем с тестами Postman"""
+            #     result.price = str(float(result.price))
             return result
         except Exception as e:
             return f'Error with: {e}'

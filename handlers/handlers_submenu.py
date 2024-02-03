@@ -78,5 +78,5 @@ async def update_submenu(id: uuid.UUID, data: schemas.Submenu, db: Session = Dep
 @router.delete('/{menu_id}/submenus/{id}')
 async def delete_submenu(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
     """Удаляет подменю"""
-    redis_service.delete(id)
+    redis_service.delete(id, db)
     return restaurant_service.delete(db, id)

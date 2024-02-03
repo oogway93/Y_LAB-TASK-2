@@ -28,6 +28,17 @@ services:
     networks:
       - db_net
 
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6381:6379"
+    env_file:
+      - ./.env
+    networks:
+      - db_net
+
   testdb:
     container_name: testdb
     build:

@@ -17,25 +17,6 @@ class CRUDRedisService:
         self.model = model
         self.restaurant_service = CRUDRestaurantService(self.model)
 
-    # def update_redis_counters(self, menu_id: str | None = None, submenu_id: str | None = None):
-    #     # Получение счетчиков из Redis
-    #     if self.model == Menu:
-    #         submenus_count = re.hget(f'{self.model}:{menu_id}', 'submenus_count')
-    #         print(submenus_count)
-    #         dishes_count = re.hget(f'{self.model}:{menu_id}', 'dishes_count')
-    #
-    #         # Обновление счетчиков
-    #         submenus_count = max(0, int(submenus_count) - 1)  # Уменьшаем количество подменю на 1
-    #         dishes_count = 0  # Обнуляем количество блюд
-    #
-    #         # Обновляем значения счетчиков в Redis
-    #         re.hset(f'{self.model}:{menu_id}', 'submenus_count', submenus_count)
-    #         re.hset(f'{self.model}:{menu_id}', 'dishes_count', dishes_count)
-    #     elif self.model == Submenu:
-    #         dishes_count = re.hget(f'{self.model}:{submenu_id}', 'dishes_count')
-    #         dishes_count = 0
-    #         re.hset(f'{self.model}:{submenu_id}', 'dishes_count', dishes_count)
-
     def store(self, item):
         # Convert the item to a JSON-encoded string
         # if item == Dish:
@@ -84,27 +65,6 @@ class CRUDRedisService:
 
     def delete(self, id: uuid.UUID, db: Session) -> None:
         """Deletes an item from Redis"""
-        # Construct the key for the item to be deleted
-        # data = self.read(db, id)
-        # json_data = json.loads(data)
-        #
-        # menu_id = ''
-        # submenu_id = ''
-        # # Получение значения menu_id из словаря
-        # if self.model == Submenu:
-        #     menu_id = json_data.get('menu_id')
-        # print(menu_id)
-        # # if self.model == Dish:
-        # #     submenu_id = json_data.get('submenu_id')
-        # # print(submenu_id)
-        # ss = self.restaurant_service.read(db, menu_id)
-        # print(ss)
-        #
-        # # key = f'{self.model}:{id}'
-        # # # Delete the key from Redis
-        # # re.delete(key)
-        # # self.update_redis_counters(menu_id, submenu_id)
-        # #########
         menu = Menu
         if self.model == Dish:
             re.delete(f'{self.model}: {id}')
@@ -124,3 +84,4 @@ class CRUDRedisService:
             menu_id = get_menu_id_for_submenu(db, id)
             if menu_id:
                 re.delete(f'{menu}:{menu_id}')
+        re.delete(f'{self.model}:{id}')

@@ -30,6 +30,7 @@ class CRUDRestaurantService:
             submenu_id: uuid.UUID | None = None,
             id: uuid.UUID | None = None
     ) -> bool:
+        """Создание"""
         table = self.model(**data.model_dump())
         if id is not None:
             table.id = id
@@ -51,6 +52,7 @@ class CRUDRestaurantService:
             db: Session,
             id: uuid.UUID | None = None,
     ) -> schemas.Menu | schemas.Submenu | schemas.Dish | Row[tuple[Any]] | None:
+        """Запись"""
         try:
             result = db.query(self.model).filter(self.model.id == id).first()
             if self.model == Menu and result is not None:
@@ -69,9 +71,6 @@ class CRUDRestaurantService:
                 ).select_from(Submenu).outerjoin(Dish).group_by(Submenu.id)
                 result_submenu = query.first()
                 result.dishes_count = result_submenu[1]
-            # elif self.model == Dish and result is not None:
-            #     """Вывод цены в формате соответствующем с тестами Postman"""
-            #     result.price = str(float(result.price))
             return result
         except Exception as e:
             return f'Error with: {e}'
@@ -80,6 +79,7 @@ class CRUDRestaurantService:
             self,
             db: Session
     ) -> list[schemas.Menu | schemas.Submenu | schemas.Dish] | list[Row[tuple[Any]]]:
+        """Все записи"""
         return db.query(self.model).all()
 
     def update(
@@ -88,6 +88,7 @@ class CRUDRestaurantService:
             db: Session,
             id: uuid.UUID | None = None
     ) -> Row[tuple[Any]]:
+        """Обновление"""
         table = db.query(self.model).filter(self.model.id == id).first()
         for key, value in data.model_dump().items():
             setattr(table, key, value)
@@ -104,5 +105,6 @@ class CRUDRestaurantService:
             db: Session,
             id: uuid.UUID | None = None
     ) -> None:
+        """Удаление"""
         db.query(self.model).filter(self.model.id == id).delete()
         db.commit()

@@ -19,8 +19,11 @@ redis_service = CRUDRedisService(Dish)
 
 
 @router.post('/{menu_id}/submenus/{submenu_id}/dishes')
-async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish,
-                      db: Session = Depends(get_db)) -> JSONResponse:
+async def create_dish(
+        submenu_id: uuid.UUID,
+        data: schemas.Dish,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Создаёт блюдо"""
     dish_creation = restaurant_service.create(data, db, submenu_id=submenu_id)
     if not dish_creation:
@@ -31,7 +34,10 @@ async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish,
 
 
 @router.get('/{menu_id}/submenus/{submenu_id}/dishes/{id}', response_model=schemas.Dish)
-async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse:
+async def get_dish(
+        id: uuid.UUID,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Просматривает определенное блюдо"""
     cached_dish = redis_service.read(db, id)
     if cached_dish is not None:
@@ -46,7 +52,9 @@ async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse
 
 
 @router.get('/{menu_id}/submenus/{submenu_id}/dishes')
-async def get_all_dishes(db: Session = Depends(get_db)) -> list[schemas.Dish]:
+async def get_all_dishes(
+        db: Session = Depends(get_db)
+) -> list[dict[str, str | int]] | list[schemas.Dish]:
     """Просматривает список блюдо"""
     cached_dish = redis_service.read_all()
     if cached_dish:
@@ -62,7 +70,11 @@ async def get_all_dishes(db: Session = Depends(get_db)) -> list[schemas.Dish]:
 
 
 @router.patch('/{menu_id}/submenus/{submenu_id}/dishes/{id}')
-async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(get_db)) -> JSONResponse:
+async def update_dish(
+        id: uuid.UUID,
+        data: schemas.Dish,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Обновляет блюдо"""
     try:
         updated_dish = redis_service.update(id, data, db)
@@ -74,7 +86,10 @@ async def update_dish(id: uuid.UUID, data: schemas.Dish, db: Session = Depends(g
 
 
 @router.delete('/{menu_id}/submenus/{submenu_id}/dishes/{id}')
-async def delete_dish(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
+async def delete_dish(
+        id: uuid.UUID,
+        db: Session = Depends(get_db)
+) -> None:
     """Удаляет блюдо"""
     redis_service.delete(id, db)
     return restaurant_service.delete(db, id)

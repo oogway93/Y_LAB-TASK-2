@@ -29,7 +29,10 @@ async def create_menu(data: schemas.Menu, db: Session = Depends(get_db)) -> JSON
 
 
 @router.get('/menus/{id}', response_model=schemas.Menu)
-async def get_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse:
+async def get_menu(
+        id: uuid.UUID,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Просматривает определенное меню"""
     cached_menu = redis_service.read(db, id)
     if cached_menu is not None:
@@ -42,7 +45,9 @@ async def get_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> JSONResponse
 
 
 @router.get('/menus')
-async def get_all_menus(db: Session = Depends(get_db)) -> list[schemas.Menu]:
+async def get_all_menus(
+        db: Session = Depends(get_db)
+) -> list[dict[str, str | int]] | list[schemas.Menu]:
     """Просматривает список меню"""
     cached_menus = redis_service.read_all()
     if cached_menus:
@@ -57,7 +62,11 @@ async def get_all_menus(db: Session = Depends(get_db)) -> list[schemas.Menu]:
 
 
 @router.patch('/menus/{id}')
-async def update_menu(id: uuid.UUID, data: schemas.Menu, db: Session = Depends(get_db)) -> JSONResponse:
+async def update_menu(
+        id: uuid.UUID,
+        data: schemas.Menu,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Обновляет меню"""
     try:
         updated_menu = redis_service.update(id, data, db)
@@ -67,7 +76,10 @@ async def update_menu(id: uuid.UUID, data: schemas.Menu, db: Session = Depends(g
 
 
 @router.delete('/menus/{id}')
-async def delete_menu(id: uuid.UUID, db: Session = Depends(get_db)) -> None:
+async def delete_menu(
+        id: uuid.UUID,
+        db: Session = Depends(get_db)
+) -> None:
     """Удаляет меню"""
     redis_service.delete(id, db)
     return restaurant_service.delete(db, id)

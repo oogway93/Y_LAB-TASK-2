@@ -17,7 +17,6 @@ DB_HOST_TEST = os.environ.get('DB_HOST_TEST')
 DB_PORT_TEST = os.environ.get('DB_PORT_TEST')
 
 REDIS_HOST = os.environ.get('REDIS_HOST')
-REDIS_PORT = os.environ.get('REDIS_PORT')
 
 link = f'postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 test_link = f'postgresql+psycopg2://{DB_USER_TEST}:{DB_PASS_TEST}@{DB_HOST_TEST}:{DB_PORT_TEST}/{DB_NAME_TEST}'

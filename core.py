@@ -1,5 +1,4 @@
 import redis
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,13 +34,3 @@ def create_app():
 
 
 app = create_app()
-
-
-def main():
-    from db.service.postgres import CRUDRestaurantService
-    CRUDRestaurantService.create_tables()
-
-
-if __name__ == '__main__':
-    main()
-    uvicorn.run('core:app', reload=True)

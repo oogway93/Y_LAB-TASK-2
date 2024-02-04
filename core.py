@@ -38,7 +38,7 @@ app = create_app()
 
 
 def main():
-    from db.queries import CRUDRestaurantService
+    from db.service.postgres import CRUDRestaurantService
     CRUDRestaurantService.create_tables()
 
 

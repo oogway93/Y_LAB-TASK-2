@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 from core import re
 from db import schemas
 from db.models import Dish, Menu, Submenu
-from db.queries import CRUDRestaurantService
-from db.queries_redis import get_menu_id_for_submenu, get_submenu_id_for_dish
+from db.service.postgres import CRUDRestaurantService
+from db.utils_redis import get_menu_id_for_submenu, get_submenu_id_for_dish
 
 
 class CRUDRedisService:

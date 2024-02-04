@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 from db import schemas
 from db.database import get_db
 from db.models import Submenu
-from db.queries import CRUDRestaurantService
-from db.redis import CRUDRedisService
+from db.service.postgres import CRUDRestaurantService
+from db.service.redis import CRUDRedisService
 
 router = APIRouter(prefix='/api/v1/menus', tags=['Submenu'])
 
@@ -25,10 +25,6 @@ async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu,
     submenu_creation = restaurant_service.create(data, db, menu_id=menu_id)
     if not submenu_creation:
         return JSONResponse(content={'Error': 'Creation submenu is failed'}, status_code=400)
-    # menu_hash = schemas.MenuHash(id=str(), title=data.id,
-    #                              description=data.id)
-    # menu_hash.save()
-
     json_compatible_item_data = jsonable_encoder(submenu_creation)
     return JSONResponse(content=json_compatible_item_data, status_code=201)
 
@@ -53,10 +49,8 @@ async def get_all_submenus(db: Session = Depends(get_db)) -> list[schemas.Submen
     if cached_submenus:
         return cached_submenus
     else:
-        # If no menus are found in Redis, get them from the database
         submenus_in_db = restaurant_service.read_all(db)
 
-        # Store the retrieved menus in Redis for future access
         for submenu in submenus_in_db:
             redis_service.store(submenu)
 
@@ -67,11 +61,9 @@ async def get_all_submenus(db: Session = Depends(get_db)) -> list[schemas.Submen
 async def update_submenu(id: uuid.UUID, data: schemas.Submenu, db: Session = Depends(get_db)) -> JSONResponse:
     """Обновляет подменю"""
     try:
-        # Attempt to update the menu in Redis and the database
         updated_submenu = redis_service.update(id, data, db)
         return JSONResponse(content=jsonable_encoder(updated_submenu))
     except HTTPException as e:
-        # Handle exceptions, such as when the item is not found
         raise e
 
 

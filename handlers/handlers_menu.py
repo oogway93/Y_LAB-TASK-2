@@ -9,8 +9,8 @@ from starlette.responses import JSONResponse
 from db import schemas
 from db.database import get_db
 from db.models import Menu
-from db.queries import CRUDRestaurantService
-from db.redis import CRUDRedisService
+from db.service.postgres import CRUDRestaurantService
+from db.service.redis import CRUDRedisService
 
 router = APIRouter(prefix='/api/v1', tags=['Menu'])
 
@@ -48,10 +48,8 @@ async def get_all_menus(db: Session = Depends(get_db)) -> list[schemas.Menu]:
     if cached_menus:
         return cached_menus
     else:
-        # If no menus are found in Redis, get them from the database
         menus_in_db = restaurant_service.read_all(db)
 
-        # Store the retrieved menus in Redis for future access
         for menu in menus_in_db:
             redis_service.store(menu)
 
@@ -62,11 +60,9 @@ async def get_all_menus(db: Session = Depends(get_db)) -> list[schemas.Menu]:
 async def update_menu(id: uuid.UUID, data: schemas.Menu, db: Session = Depends(get_db)) -> JSONResponse:
     """Обновляет меню"""
     try:
-        # Attempt to update the menu in Redis and the database
         updated_menu = redis_service.update(id, data, db)
         return JSONResponse(content=jsonable_encoder(updated_menu))
     except HTTPException as e:
-        # Handle exceptions, such as when the item is not found
         raise e
 
 

@@ -10,8 +10,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - testdb
       - db
+      - redis
     command: bash -c "alembic upgrade head && uvicorn core:app --reload --host 0.0.0.0"
     networks:
       - db_net
@@ -20,11 +20,11 @@ services:
 
   db:
     container_name: db
-    image: postgres:15.1-alpine
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.db
     ports:
       - "5434:5432"
-    env_file:
-      - ./.env
     networks:
       - db_net
 
@@ -38,28 +38,6 @@ services:
       - ./.env
     networks:
       - db_net
-
-  testdb:
-    container_name: testdb
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.testdb
-    ports:
-      - "5433:5432"
-    networks:
-      - db_net
-
-  test:
-    container_name: test
-    build:
-      context: .
-      dockerfile: Dockerfile
-    networks:
-      - db_net
-    depends_on:
-      - testdb
-
-
 
 volumes:
   postgres_data:

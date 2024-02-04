@@ -19,7 +19,10 @@ redis_service = CRUDRedisService(Menu)
 
 
 @router.post('/menus')
-async def create_menu(data: schemas.Menu, db: Session = Depends(get_db)) -> JSONResponse:
+async def create_menu(
+        data: schemas.Menu,
+        db: Session = Depends(get_db)
+) -> JSONResponse:
     """Создаёт меню"""
     menu_creation = restaurant_service.create(data, db)
     if not menu_creation:

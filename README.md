@@ -49,6 +49,8 @@
 Дополнительно:
 Контейнеры с проектом и с тестами запускаются разными командами.
 
+### __Ответ на 6 пункт в tests/utils.py__
+
 1. Firstly, you need to add venv file by this command:
    ```python
     python -m venv venv
@@ -69,7 +71,7 @@
    REDIS_HOST=redis
 3. Start docker-compose.test.yaml by the command:
       ```python
-   docker compose -f docker-compose.test.yaml up -d --build
+   docker compose -f docker-compose.test.yaml up --build
 4. Start docker-compose.prod.yaml by the command:
    ```
-   docker compose -f docker-compose.prod.yaml up -d --build
+   docker compose -f docker-compose.prod.yaml up --build

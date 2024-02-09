@@ -1,13 +1,11 @@
 import json
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 
 from db import schemas
-from db.database import get_db
 from db.models import Dish
 from db.service.postgres import CRUDRestaurantService
 from db.service.redis import CRUDRedisService
@@ -22,10 +20,9 @@ redis_service = CRUDRedisService(Dish)
 async def create_dish(
         submenu_id: uuid.UUID,
         data: schemas.Dish,
-        db: Session = Depends(get_db)
 ) -> JSONResponse:
     """Создаёт блюдо"""
-    dish_creation = restaurant_service.create(data, db, submenu_id=submenu_id)
+    dish_creation = restaurant_service.create(data, submenu_id=submenu_id)
     if not dish_creation:
         return JSONResponse(content={'detail': 'Failed to create dish'}, status_code=400)
     json_compatible_item_data = jsonable_encoder(dish_creation)
@@ -36,13 +33,12 @@ async def create_dish(
 @router.get('/{menu_id}/submenus/{submenu_id}/dishes/{id}', response_model=schemas.Dish)
 async def get_dish(
         id: uuid.UUID,
-        db: Session = Depends(get_db)
 ) -> JSONResponse:
     """Просматривает определенное блюдо"""
-    cached_dish = redis_service.read(db, id)
+    cached_dish = redis_service.read(id)
     if cached_dish is not None:
         return JSONResponse(content=json.loads(cached_dish.decode('utf-8')))
-    dish = restaurant_service.read(db, id)
+    dish = restaurant_service.read(id)
     if dish is not None:
         dish.price = str(dish.price)
     if not dish:
@@ -53,14 +49,13 @@ async def get_dish(
 
 @router.get('/{menu_id}/submenus/{submenu_id}/dishes')
 async def get_all_dishes(
-        db: Session = Depends(get_db)
 ) -> list[dict[str, str | int]] | list[schemas.Dish]:
     """Просматривает список блюдо"""
     cached_dish = redis_service.read_all()
     if cached_dish:
         return cached_dish
     else:
-        dish_in_db = restaurant_service.read_all(db)
+        dish_in_db = restaurant_service.read_all()
 
         for dish in dish_in_db:
             dish.price = str(dish.price)
@@ -73,11 +68,10 @@ async def get_all_dishes(
 async def update_dish(
         id: uuid.UUID,
         data: schemas.Dish,
-        db: Session = Depends(get_db)
 ) -> JSONResponse:
     """Обновляет блюдо"""
     try:
-        updated_dish = redis_service.update(id, data, db)
+        updated_dish = redis_service.update(id, data)
         json_compatible_item_data = jsonable_encoder(updated_dish)
         json_compatible_item_data['price'] = str(json_compatible_item_data['price'])
         return JSONResponse(content=json_compatible_item_data)
@@ -88,8 +82,7 @@ async def update_dish(
 @router.delete('/{menu_id}/submenus/{submenu_id}/dishes/{id}')
 async def delete_dish(
         id: uuid.UUID,
-        db: Session = Depends(get_db)
 ) -> None:
     """Удаляет блюдо"""
-    redis_service.delete(id, db)
-    return restaurant_service.delete(db, id)
+    redis_service.delete(id)
+    return restaurant_service.delete(id)

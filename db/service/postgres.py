@@ -2,12 +2,12 @@ import logging
 import uuid
 from typing import Any
 
+from fastapi import Depends
 from sqlalchemy import Row, func
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
 
 from db import schemas
-from db.database import Base, engine
+from db.database import Base, engine, get_db
 from db.models import Dish, Menu, Submenu
 
 
@@ -21,11 +21,11 @@ class CRUDRestaurantService:
 
     def __init__(self, model):
         self.model = model
+        self.db = Depends(get_db)
 
     def create(
             self,
             data: schemas.Menu | schemas.Submenu | schemas.Dish,
-            db: Session,
             menu_id: uuid.UUID | None = None,
             submenu_id: uuid.UUID | None = None,
             id: uuid.UUID | None = None
@@ -39,9 +39,9 @@ class CRUDRestaurantService:
         if submenu_id is not None:
             table.submenu_id = submenu_id
         try:
-            db.add(table)
-            db.commit()
-            db.refresh(table)
+            self.db.add(table)
+            self.db.commit()
+            self.db.refresh(table)
         except IntegrityError as e:
             logging.info(e)
             return False
@@ -49,13 +49,12 @@ class CRUDRestaurantService:
 
     def read(
             self,
-            db: Session,
             id: uuid.UUID | None = None,
     ) -> schemas.Menu | schemas.Submenu | schemas.Dish | Row[tuple[Any]] | None:
         """Запись"""
-        result = db.query(self.model).filter(self.model.id == id).first()
+        result = self.db.query(self.model).filter(self.model.id == id).first()
         if self.model == Menu and result is not None:
-            query = db.query(
+            query = self.db.query(
                 Menu.id,
                 func.count(Submenu.id.distinct()).label('submenus_count'),
                 func.count(Dish.id.distinct()).label('dishes_count')
@@ -64,7 +63,7 @@ class CRUDRestaurantService:
             result.submenus_count = result_menu[1]
             result.dishes_count = result_menu[2]
         elif self.model == Submenu and result is not None:
-            query = db.query(
+            query = self.db.query(
                 Submenu.id,
                 func.count(Dish.id.distinct()).label('dishes_count')
             ).select_from(Submenu).outerjoin(Dish).group_by(Submenu.id)
@@ -74,34 +73,31 @@ class CRUDRestaurantService:
 
     def read_all(
             self,
-            db: Session
     ) -> list[schemas.Menu | schemas.Submenu | schemas.Dish] | list[Row[tuple[Any]]]:
         """Все записи"""
-        return db.query(self.model).all()
+        return self.db.query(self.model).all()
 
     def update(
             self,
             data: schemas.Menu | schemas.Submenu | schemas.Dish,
-            db: Session,
             id: uuid.UUID | None = None
     ) -> Row[tuple[Any]]:
         """Обновление"""
-        table = db.query(self.model).filter(self.model.id == id).first()
+        table = self.db.query(self.model).filter(self.model.id == id).first()
         for key, value in data.model_dump().items():
             setattr(table, key, value)
         try:
-            db.add(table)
-            db.commit()
-            db.refresh(table)
+            self.db.add(table)
+            self.db.commit()
+            self.db.refresh(table)
         except IntegrityError as e:
             logging.info(e)
         return table
 
     def delete(
             self,
-            db: Session,
             id: uuid.UUID | None = None
     ) -> None:
         """Удаление"""
-        db.query(self.model).filter(self.model.id == id).delete()
-        db.commit()
+        self.db.query(self.model).filter(self.model.id == id).delete()
+        self.db.commit()

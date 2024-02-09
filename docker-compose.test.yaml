@@ -1,35 +1,13 @@
 version: "3.10"
 
 services:
-  web_app:
-    restart: always
-    container_name: web_app
-    build: ./
-    volumes:
-      - ./:/app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - testdb
-      - redis
-    command: bash -c "alembic upgrade head && uvicorn core:app --reload --host 0.0.0.0"
-    networks:
-      - testdb_net
-    env_file:
-      - ./.env
-
-  db:
-    container_name: db
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.db
-    ports:
-      - "5434:5432"
-    networks:
-      - testdb_net
-
   redis:
     container_name: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     image: redis:latest
     restart: always
     ports:
@@ -41,6 +19,11 @@ services:
 
   testdb:
     container_name: testdb
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "testdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     build:
       context: .
       dockerfile: docker/Dockerfile.testdb

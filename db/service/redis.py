@@ -2,13 +2,14 @@ import json
 import uuid
 from typing import Any
 
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
 from core import re
 from db import schemas
+from db.database import get_db
 from db.models import Dish, Menu, Submenu
 from db.service.postgres import CRUDRestaurantService
 from db.utils_redis import get_menu_id_for_submenu, get_submenu_id_for_dish
@@ -21,6 +22,7 @@ class CRUDRedisService:
     ):
         self.model = model
         self.restaurant_service = CRUDRestaurantService(self.model)
+        self.db: Session = Depends(get_db)
 
     def store(
             self,
@@ -33,7 +35,6 @@ class CRUDRedisService:
 
     def read(
             self,
-            db: Session,
             id: uuid.UUID | None = None
     ) -> bytes | None:
         """Считываем запись"""
@@ -41,7 +42,7 @@ class CRUDRedisService:
         if result_redis is not None:
             return result_redis
         else:
-            result = self.restaurant_service.read(db, id)
+            result = self.restaurant_service.read(id)
             if result is not None:
                 re.set(f'{self.model}:{id}', json.dumps(jsonable_encoder(result)))
                 re.expire(f'{self.model}:{id}', 60)
@@ -62,10 +63,9 @@ class CRUDRedisService:
             self,
             id: uuid.UUID,
             data: schemas.Menu | schemas.Submenu | schemas.Dish,
-            db: Session
     ) -> Row[tuple[Any]]:
         """Обновление данных"""
-        updated_item = self.restaurant_service.update(data, db, id)
+        updated_item = self.restaurant_service.update(data, id)
         if updated_item:
             item_str = json.dumps(jsonable_encoder(updated_item))
             if 'price' in item_str:
@@ -80,22 +80,21 @@ class CRUDRedisService:
     def delete(
             self,
             id: uuid.UUID,
-            db: Session
     ) -> None:
         """Удаление всех данных"""
         menu = Menu
         if self.model == Dish:
             re.delete(f'{self.model}: {id}')
-            submenu_id = get_submenu_id_for_dish(db, id)
+            submenu_id = get_submenu_id_for_dish(self.db, id)
             if submenu_id:
                 submenu = Submenu
                 re.delete(f'{submenu}:{submenu_id}')
-                menu_id = get_menu_id_for_submenu(db, submenu_id)
+                menu_id = get_menu_id_for_submenu(self.db, submenu_id)
                 if menu_id:
                     re.delete(f'{menu}:{menu_id}')
         elif self.model == Submenu:
             re.delete(f'{self.model}:{id}')
-            menu_id = get_menu_id_for_submenu(db, id)
+            menu_id = get_menu_id_for_submenu(self.db, id)
             if menu_id:
                 re.delete(f'{menu}:{menu_id}')
         re.delete(f'{self.model}:{id}')

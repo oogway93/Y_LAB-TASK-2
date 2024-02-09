@@ -2,7 +2,7 @@ version: "3.10"
 
 services:
   web_app:
-    restart: always
+    restart: on-failure
     container_name: web_app
     build: ./
     volumes:
@@ -20,6 +20,11 @@ services:
 
   db:
     container_name: db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     build:
       context: .
       dockerfile: docker/Dockerfile.db
@@ -30,6 +35,11 @@ services:
 
   redis:
     container_name: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     image: redis:latest
     restart: always
     ports:

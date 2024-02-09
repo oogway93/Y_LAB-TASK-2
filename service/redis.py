@@ -2,17 +2,16 @@ import json
 import uuid
 from typing import Any
 
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import Row
-from sqlalchemy.orm import Session
 
 from core import re
 from db import schemas
-from db.database import get_db
+from db.database import SessionLocal
 from db.models import Dish, Menu, Submenu
-from db.service.postgres import CRUDRestaurantService
-from db.utils_redis import get_menu_id_for_submenu, get_submenu_id_for_dish
+from service.postgres import CRUDRestaurantService
+from service.utils_redis import get_menu_id_for_submenu, get_submenu_id_for_dish
 
 
 class CRUDRedisService:
@@ -22,7 +21,7 @@ class CRUDRedisService:
     ):
         self.model = model
         self.restaurant_service = CRUDRestaurantService(self.model)
-        self.db: Session = Depends(get_db)
+        self.db = SessionLocal()
 
     def store(
             self,
@@ -67,6 +66,7 @@ class CRUDRedisService:
         """Обновление данных"""
         updated_item = self.restaurant_service.update(data, id)
         if updated_item:
+            re.delete(f'{self.model}:{id}')
             item_str = json.dumps(jsonable_encoder(updated_item))
             if 'price' in item_str:
                 updated_item.price = str(updated_item.price)
@@ -98,3 +98,6 @@ class CRUDRedisService:
             if menu_id:
                 re.delete(f'{menu}:{menu_id}')
         re.delete(f'{self.model}:{id}')
+
+    def __del__(self):
+        self.db.close()

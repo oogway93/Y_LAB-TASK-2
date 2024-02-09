@@ -7,8 +7,8 @@ from starlette.responses import JSONResponse
 
 from db import schemas
 from db.models import Menu
-from db.service.postgres import CRUDRestaurantService
-from db.service.redis import CRUDRedisService
+from service.postgres import CRUDRestaurantService
+from service.redis import CRUDRedisService
 
 router = APIRouter(prefix='/api/v1', tags=['Menu'])
 

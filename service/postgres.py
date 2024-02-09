@@ -2,12 +2,11 @@ import logging
 import uuid
 from typing import Any
 
-from fastapi import Depends
 from sqlalchemy import Row, func
 from sqlalchemy.exc import IntegrityError
 
 from db import schemas
-from db.database import Base, engine, get_db
+from db.database import Base, SessionLocal, engine
 from db.models import Dish, Menu, Submenu
 
 
@@ -21,7 +20,7 @@ class CRUDRestaurantService:
 
     def __init__(self, model):
         self.model = model
-        self.db = Depends(get_db)
+        self.db = SessionLocal()
 
     def create(
             self,
@@ -101,3 +100,6 @@ class CRUDRestaurantService:
         """Удаление"""
         self.db.query(self.model).filter(self.model.id == id).delete()
         self.db.commit()
+
+    def __del__(self):
+        self.db.close()
